@@ -27,3 +27,12 @@ def user_login(request):
     else:
         form = AuthenticationForm()
     return render(request, 'accounts/login.html', {'form': form})
+
+def forgot_password_view(request):
+    return render(request, 'accounts/forgot_password.html')
+
+def recovery_view(request):
+    return render(request, 'accounts/recovery.html')
+
+def set_password_view(request):
+    return render(request, 'accounts/set_password.html')
