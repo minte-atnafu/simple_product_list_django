@@ -4,7 +4,8 @@ from .models import Product
 
 def product_list(request):
     products=Product.objects.all()
-    context={'products':products}
+    rating_range = range(1, 6)
+    context={'products':products, 'rating_rage':rating_range}
     return render(request, 'product/product_list.html',context)
 
 # single product detail shown here

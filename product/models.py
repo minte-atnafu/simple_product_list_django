@@ -7,6 +7,7 @@ class Product(models.Model):
     description=models.TextField(blank=True)
     image=models.ImageField(upload_to='product/', blank=True, null=True)
     created_at=models.DateTimeField(auto_now_add=True)
+    rating = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.name
