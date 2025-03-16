@@ -1,8 +1,11 @@
 {% extends 'main.html' %}
 
 {% block content %}
-{% load static%}
+{% load static %}
+{% load socialaccount %}  <!-- Load the socialaccount template tags -->
+
 <style>
+/* Your existing CSS styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -111,7 +114,7 @@ h2 {
 .create-account-button {
     width: 100%;
     padding: 0.75rem;
-    background-color: #28a745;
+    background-color: #8078C2;
     color: white;
     border: none;
     border-radius: 4px;
@@ -121,7 +124,7 @@ h2 {
 }
 
 .create-account-button:hover {
-    background-color: #218838;
+    background-color: #6b63aa;
 }
 
 .login-link {
@@ -140,47 +143,67 @@ h2 {
 }
 </style>
 
-
 <body>
     <div class="container">
-        <!-- Left Side: Picture -->
         <div class="left-side">
             <img src="{% static 'assets/TeleMarketLogo_1.webp' %}" alt="Signup Image">
         </div>
-
-        <!-- Right Side: Form -->
+    
         <div class="right-side">
             <div class="signup-container">
                 <h2>Create account</h2>
+                <!-- Social Signup Buttons -->
                 <div class="social-buttons">
-                    <button class="social-button google">
-                        <img src="https://www.gstatic.com/images/branding/googleg/1x/googleg_standard_color_128dp.png" alt="Google Logo">                        Sign up with Google
-                    </button>
-                    <button class="social-button facebook">
+                    <a href="{% provider_login_url 'google' %}" class="social-button google">
+                        <img src="https://www.gstatic.com/images/branding/googleg/1x/googleg_standard_color_128dp.png" alt="Google Logo">
+                        Sign up with Google
+                    </a>
+                    <a href="{% provider_login_url 'facebook' %}" class="social-button facebook">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook Logo">
                         Sign up with Facebook
-                    </button>
+                    </a>
                 </div>
                 <div class="separator">- OR -</div>
-                <form method="post" action="{% url 'signup' %}">
+    
+                <!-- Regular Signup Form -->
+                <form method="post" action="{% url 'account_signup' %}">
+                    {% csrf_token %}
+                    
+                    <!-- Display errors -->
+                    {% if form.errors %}
+                        <div class="form-errors">
+                            <ul>
+                                {% for field in form %}
+                                    {% if field.errors %}
+                                        <li>{{ field.label }}: {{ field.errors }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    
                     <div class="form-group">
-                        <input type="text" id="fullname" name="fullname" placeholder="Full Name" required>
+                        <input type="text" id="username" name="username" placeholder="Username" value="{{ form.username.value }}" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" id="email" name="email" placeholder="Email Address" required>
+                        <input type="email" id="email" name="email" placeholder="Email Address" value="{{ form.email.value }}" required>
                     </div>
                     <div class="form-group">
-                        <input type="password" id="password" name="password" placeholder="Password" required>
+                        <input type="password" id="password1" name="password1" placeholder="Password" required>
                     </div>
+                    <div class="form-group">
+                        <input type="password" id="password2" name="password2" placeholder="Confirm Password" required>
+                    </div>
+    
                     <button type="submit" class="create-account-button">Create Account</button>
                 </form>
+    
                 <div class="login-link">
-                    Already have an account? <a href="{% url 'login' %}">Log in</a>
+                    Already have an account? <a href="{% url 'account_login' %}">Log in</a>
                 </div>
             </div>
         </div>
     </div>
-
-
+</body>
 
 {% endblock %}

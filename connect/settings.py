@@ -41,6 +41,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+
+    'django.contrib.sites',  # Required for allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',  # For social authentication
+    'allauth.socialaccount.providers.google',  # For Google login
+    'allauth.socialaccount.providers.facebook',  # For Facebook login
 ]
 
 MIDDLEWARE = [
@@ -51,6 +59,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+      
+    'allauth.account.middleware.AccountMiddleware',  # Add this line
 ]
 
 ROOT_URLCONF = 'connect.urls'
@@ -72,8 +82,12 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'connect.wsgi.application'
+# CSRF_COOKIE_DOMAIN = '.yourdomain.com'  # for subdomains
+# CSRF_TRUSTED_ORIGINS = ['https://yourdomain.com']
 
-
+CSRF_COOKIE_NAME = 'csrftoken'  # Ensures the CSRF cookie name is correct
+CSRF_COOKIE_HTTPONLY = True     # This makes the CSRF token cookie HTTP-only for added security
+CSRF_COOKIE_SECURE = False     # Use this if you're working with HTTPS
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -88,7 +102,7 @@ DATABASES = {
     }
 }
 
-
+SITE_ID = 1  # Required for allauth
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -134,3 +148,21 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Default backend
+    'allauth.account.auth_backends.AuthenticationBackend',  # Allauth backend
+]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': '1044654246067-oqib5sjbj80i8qmehf016lar0hk97fcg.apps.googleusercontent.com',
+            'secret': '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',
+            'key': ''
+        },
+        "SCOPE": ["profile", "email"],
+        "AUTH_PARAMS": {"access_type": "online"},
+        "REDIRECT_URI": "http://127.0.0.1:8000/accounts/google/login/callback/",  # Ensure this is correct
+    }
+}
